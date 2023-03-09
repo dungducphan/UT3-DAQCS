@@ -99,6 +99,21 @@ public:
 		{return (static_cast<Camera *>(dev))->is_triggerMode_allowed(ty);}
 };
 
+//	Attribute Gain class definition
+class GainAttrib: public Tango::Attr
+{
+public:
+	GainAttrib():Attr("Gain",
+			Tango::DEV_FLOAT, Tango::READ_WRITE) {};
+	~GainAttrib() {};
+	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
+		{(static_cast<Camera *>(dev))->read_Gain(att);}
+	virtual void write(Tango::DeviceImpl *dev,Tango::WAttribute &att)
+		{(static_cast<Camera *>(dev))->write_Gain(att);}
+	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
+		{return (static_cast<Camera *>(dev))->is_Gain_allowed(ty);}
+};
+
 //	Attribute beamProfileImg class definition
 class beamProfileImgAttrib: public Tango::ImageAttr
 {

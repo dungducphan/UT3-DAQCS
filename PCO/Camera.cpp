@@ -61,6 +61,7 @@
 //  exposureTime    |  Tango::DevLong	Scalar
 //  frameRate       |  Tango::DevFloat	Scalar
 //  triggerMode     |  Tango::DevShort	Scalar
+//  Gain            |  Tango::DevFloat	Scalar
 //  beamProfileImg  |  Tango::DevShort	Image  ( max = 1280 x 1024)
 //================================================================
 
@@ -120,8 +121,10 @@ void Camera::delete_device()
 	//	Delete device allocated objects
 	
 	/*----- PROTECTED REGION END -----*/	//	Camera::delete_device
+	delete[] attr_exposureTime_read;
 	delete[] attr_frameRate_read;
 	delete[] attr_triggerMode_read;
+	delete[] attr_Gain_read;
 	delete[] attr_beamProfileImg_read;
 }
 
@@ -142,8 +145,10 @@ void Camera::init_device()
 	
 	//	No device property to be read from database
 	
+	attr_exposureTime_read = new Tango::DevLong[1];
 	attr_frameRate_read = new Tango::DevFloat[1];
 	attr_triggerMode_read = new Tango::DevShort[1];
+	attr_Gain_read = new Tango::DevFloat[1];
 	attr_beamProfileImg_read = new Tango::DevShort[1280*1024];
 	/*----- PROTECTED REGION ID(Camera::init_device) ENABLED START -----*/
 	
@@ -314,6 +319,44 @@ void Camera::write_triggerMode(Tango::WAttribute &attr)
 	
 	
 	/*----- PROTECTED REGION END -----*/	//	Camera::write_triggerMode
+}
+//--------------------------------------------------------
+/**
+ *	Read attribute Gain related method
+ *	Description: 
+ *
+ *	Data type:	Tango::DevFloat
+ *	Attr type:	Scalar
+ */
+//--------------------------------------------------------
+void Camera::read_Gain(Tango::Attribute &attr)
+{
+	DEBUG_STREAM << "Camera::read_Gain(Tango::Attribute &attr) entering... " << endl;
+	/*----- PROTECTED REGION ID(Camera::read_Gain) ENABLED START -----*/
+	//	Set the attribute value
+	attr.set_value(attr_Gain_read);
+	
+	/*----- PROTECTED REGION END -----*/	//	Camera::read_Gain
+}
+//--------------------------------------------------------
+/**
+ *	Write attribute Gain related method
+ *	Description: 
+ *
+ *	Data type:	Tango::DevFloat
+ *	Attr type:	Scalar
+ */
+//--------------------------------------------------------
+void Camera::write_Gain(Tango::WAttribute &attr)
+{
+	DEBUG_STREAM << "Camera::write_Gain(Tango::WAttribute &attr) entering... " << endl;
+	//	Retrieve write value
+	Tango::DevFloat	w_val;
+	attr.get_write_value(w_val);
+	/*----- PROTECTED REGION ID(Camera::write_Gain) ENABLED START -----*/
+	
+	
+	/*----- PROTECTED REGION END -----*/	//	Camera::write_Gain
 }
 //--------------------------------------------------------
 /**

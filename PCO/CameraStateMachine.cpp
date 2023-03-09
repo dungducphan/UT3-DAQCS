@@ -106,6 +106,26 @@ bool Camera::is_triggerMode_allowed(TANGO_UNUSED(Tango::AttReqType type))
 
 //--------------------------------------------------------
 /**
+ *	Method      : Camera::is_Gain_allowed()
+ *	Description : Execution allowed for Gain attribute
+ */
+//--------------------------------------------------------
+bool Camera::is_Gain_allowed(TANGO_UNUSED(Tango::AttReqType type))
+{
+	//	Not any excluded states for Gain attribute in Write access.
+	/*----- PROTECTED REGION ID(Camera::GainStateAllowed_WRITE) ENABLED START -----*/
+	
+	/*----- PROTECTED REGION END -----*/	//	Camera::GainStateAllowed_WRITE
+
+	//	Not any excluded states for Gain attribute in read access.
+	/*----- PROTECTED REGION ID(Camera::GainStateAllowed_READ) ENABLED START -----*/
+	
+	/*----- PROTECTED REGION END -----*/	//	Camera::GainStateAllowed_READ
+	return true;
+}
+
+//--------------------------------------------------------
+/**
  *	Method      : Camera::is_beamProfileImg_allowed()
  *	Description : Execution allowed for beamProfileImg attribute
  */

@@ -350,8 +350,8 @@ void CameraClass::attribute_factory(vector<Tango::Attr *> &att_list)
 	//	standard_unit	not set for exposureTime
 	//	display_unit	not set for exposureTime
 	//	format	not set for exposureTime
-	exposuretime_prop.set_max_value("10000000000");
-	exposuretime_prop.set_min_value("10");
+	//	max_value	not set for exposureTime
+	//	min_value	not set for exposureTime
 	//	max_alarm	not set for exposureTime
 	//	min_alarm	not set for exposureTime
 	//	max_warning	not set for exposureTime
@@ -412,6 +412,30 @@ void CameraClass::attribute_factory(vector<Tango::Attr *> &att_list)
 	triggermode->set_disp_level(Tango::OPERATOR);
 	//	Not Memorized
 	att_list.push_back(triggermode);
+
+	//	Attribute : Gain
+	GainAttrib	*gain = new GainAttrib();
+	Tango::UserDefaultAttrProp	gain_prop;
+	//	description	not set for Gain
+	//	label	not set for Gain
+	//	unit	not set for Gain
+	//	standard_unit	not set for Gain
+	//	display_unit	not set for Gain
+	//	format	not set for Gain
+	//	max_value	not set for Gain
+	//	min_value	not set for Gain
+	//	max_alarm	not set for Gain
+	//	min_alarm	not set for Gain
+	//	max_warning	not set for Gain
+	//	min_warning	not set for Gain
+	//	delta_t	not set for Gain
+	//	delta_val	not set for Gain
+	
+	gain->set_default_properties(gain_prop);
+	//	Not Polled
+	gain->set_disp_level(Tango::OPERATOR);
+	//	Not Memorized
+	att_list.push_back(gain);
 
 	//	Attribute : beamProfileImg
 	beamProfileImgAttrib	*beamprofileimg = new beamProfileImgAttrib();

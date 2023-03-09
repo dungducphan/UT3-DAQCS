@@ -66,6 +66,7 @@ public:
 	Tango::DevLong	*attr_exposureTime_read;
 	Tango::DevFloat	*attr_frameRate_read;
 	Tango::DevShort	*attr_triggerMode_read;
+	Tango::DevFloat	*attr_Gain_read;
 	Tango::DevShort	*attr_beamProfileImg_read;
 
 //	Constructors and destructors
@@ -161,6 +162,16 @@ public:
 	virtual void read_triggerMode(Tango::Attribute &attr);
 	virtual void write_triggerMode(Tango::WAttribute &attr);
 	virtual bool is_triggerMode_allowed(Tango::AttReqType type);
+/**
+ *	Attribute Gain related methods
+ *	Description: 
+ *
+ *	Data type:	Tango::DevFloat
+ *	Attr type:	Scalar
+ */
+	virtual void read_Gain(Tango::Attribute &attr);
+	virtual void write_Gain(Tango::WAttribute &attr);
+	virtual bool is_Gain_allowed(Tango::AttReqType type);
 /**
  *	Attribute beamProfileImg related methods
  *	Description: 
