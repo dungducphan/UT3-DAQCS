@@ -58,11 +58,11 @@
 //================================================================
 //  Attributes managed are:
 //================================================================
-//  exposureTime    |  Tango::DevDouble	Scalar
+//  exposureTime    |  Tango::DevULong	Scalar
 //  frameRate       |  Tango::DevFloat	Scalar
-//  triggerMode     |  Tango::DevShort	Scalar
+//  triggerMode     |  Tango::DevUShort	Scalar
 //  Gain            |  Tango::DevFloat	Scalar
-//  beamProfileImg  |  Tango::DevShort	Image  ( max = 1280 x 1024)
+//  beamProfileImg  |  Tango::DevUShort	Image  ( max = 1392 x 1024)
 //================================================================
 
 namespace Camera_ns {
@@ -143,18 +143,22 @@ namespace Camera_ns {
 
         //	No device property to be read from database
 
-        attr_exposureTime_read = new Tango::DevDouble[1];
+        attr_exposureTime_read = new Tango::DevULong[1];
         attr_frameRate_read = new Tango::DevFloat[1];
-        attr_triggerMode_read = new Tango::DevShort[1];
+        attr_triggerMode_read = new Tango::DevUShort[1];
         attr_Gain_read = new Tango::DevFloat[1];
-        attr_beamProfileImg_read = new Tango::DevShort[1280 * 1024];
+        attr_beamProfileImg_read = new Tango::DevUShort[1392 * 1024];
         /*----- PROTECTED REGION ID(Camera::init_device) ENABLED START -----*/
 
         //	Initialize device
+        *attr_exposureTime_read = 10000000;
+        *attr_triggerMode_read = 0;
+
         try {
             cam = new pco::Camera();
             img = new pco::Image();
-            cam->setExposureTime(0.1);
+            camConfig.exposure_time_s = cam->getConfiguration().exposure_time_s;
+            camConfig.trigger_mode = cam->getConfiguration().trigger_mode;
         } catch (pco::CameraException &err) {
             std::cout << "Error Code: " << err.error_code() << std::endl;
             std::cout << err.what() << std::endl;
@@ -190,7 +194,15 @@ namespace Camera_ns {
         /*----- PROTECTED REGION ID(Camera::read_attr_hardware) ENABLED START -----*/
 
         //	Add your own code
-        *attr_exposureTime_read = (Tango::DevDouble) cam->getExposureTime() * 1000000000;
+        std::string att_name;
+        for (long i = 0; i < attr_list.size(); i++) {
+            att_name = dev_attr->get_attr_by_ind(attr_list[i]).get_name();
+            if (att_name == "exposureTime") {
+                *attr_exposureTime_read = camConfig.exposure_time_s * 1000000000;
+            } else if (att_name == "triggerMode") {
+                *attr_triggerMode_read = camConfig.trigger_mode;
+            }
+        }
         /*----- PROTECTED REGION END -----*/    //	Camera::read_attr_hardware
     }
 //--------------------------------------------------------
@@ -204,8 +216,12 @@ namespace Camera_ns {
         /*----- PROTECTED REGION ID(Camera::write_attr_hardware) ENABLED START -----*/
 
         //	Add your own code
-        cam->setExposureTime((double) *attr_exposureTime_read * 1E-9);
-
+        try {
+            cam->setConfiguration(camConfig);
+        } catch (pco::CameraException &err) {
+            std::cout << "Error Code: " << err.error_code() << std::endl;
+            std::cout << err.what() << std::endl;
+        }
         /*----- PROTECTED REGION END -----*/    //	Camera::write_attr_hardware
     }
 
@@ -214,7 +230,7 @@ namespace Camera_ns {
  *	Read attribute exposureTime related method
  *	Description: Exposure Time in nanoseconds.
  *
- *	Data type:	Tango::DevDouble
+ *	Data type:	Tango::DevULong
  *	Attr type:	Scalar
  */
 //--------------------------------------------------------
@@ -223,7 +239,6 @@ namespace Camera_ns {
         /*----- PROTECTED REGION ID(Camera::read_exposureTime) ENABLED START -----*/
         //	Set the attribute value
         attr.set_value(attr_exposureTime_read);
-
         /*----- PROTECTED REGION END -----*/    //	Camera::read_exposureTime
     }
 //--------------------------------------------------------
@@ -231,17 +246,17 @@ namespace Camera_ns {
  *	Write attribute exposureTime related method
  *	Description: Exposure Time in nanoseconds.
  *
- *	Data type:	Tango::DevDouble
+ *	Data type:	Tango::DevULong
  *	Attr type:	Scalar
  */
 //--------------------------------------------------------
     void Camera::write_exposureTime(Tango::WAttribute &attr) {
         DEBUG_STREAM << "Camera::write_exposureTime(Tango::WAttribute &attr) entering... " << endl;
         //	Retrieve write value
-        Tango::DevDouble w_val;
+        Tango::DevULong w_val;
         attr.get_write_value(w_val);
         /*----- PROTECTED REGION ID(Camera::write_exposureTime) ENABLED START -----*/
-        *attr_exposureTime_read = w_val;
+        camConfig.exposure_time_s = ((double) w_val) / 1.0E9;
         /*----- PROTECTED REGION END -----*/    //	Camera::write_exposureTime
     }
 //--------------------------------------------------------
@@ -285,7 +300,7 @@ namespace Camera_ns {
  *	Read attribute triggerMode related method
  *	Description: 
  *
- *	Data type:	Tango::DevShort
+ *	Data type:	Tango::DevUShort
  *	Attr type:	Scalar
  */
 //--------------------------------------------------------
@@ -302,18 +317,17 @@ namespace Camera_ns {
  *	Write attribute triggerMode related method
  *	Description: 
  *
- *	Data type:	Tango::DevShort
+ *	Data type:	Tango::DevUShort
  *	Attr type:	Scalar
  */
 //--------------------------------------------------------
     void Camera::write_triggerMode(Tango::WAttribute &attr) {
         DEBUG_STREAM << "Camera::write_triggerMode(Tango::WAttribute &attr) entering... " << endl;
         //	Retrieve write value
-        Tango::DevShort w_val;
+        Tango::DevUShort w_val;
         attr.get_write_value(w_val);
         /*----- PROTECTED REGION ID(Camera::write_triggerMode) ENABLED START -----*/
-
-
+        camConfig.trigger_mode = w_val;
         /*----- PROTECTED REGION END -----*/    //	Camera::write_triggerMode
     }
 //--------------------------------------------------------
@@ -357,15 +371,15 @@ namespace Camera_ns {
  *	Read attribute beamProfileImg related method
  *	Description: 
  *
- *	Data type:	Tango::DevShort
- *	Attr type:	Image max = 1280 x 1024
+ *	Data type:	Tango::DevUShort
+ *	Attr type:	Image max = 1392 x 1024
  */
 //--------------------------------------------------------
     void Camera::read_beamProfileImg(Tango::Attribute &attr) {
         DEBUG_STREAM << "Camera::read_beamProfileImg(Tango::Attribute &attr) entering... " << endl;
         /*----- PROTECTED REGION ID(Camera::read_beamProfileImg) ENABLED START -----*/
         //	Set the attribute value
-        attr.set_value(attr_beamProfileImg_read, 1280, 1024);
+        attr.set_value(attr_beamProfileImg_read, 1392, 1024);
 
         /*----- PROTECTED REGION END -----*/    //	Camera::read_beamProfileImg
     }
@@ -397,8 +411,9 @@ namespace Camera_ns {
         /*----- PROTECTED REGION ID(Camera::grab_image) ENABLED START -----*/
 
         //	Add your own code
-        cam->record(10, pco::RecordMode::sequence);
-        cam->image(*img, 1, pco::DataFormat::BGR8);
+        cam->record(1, pco::RecordMode::sequence);
+        cam->image(*img, 0, pco::DataFormat::Mono16);
+        attr_beamProfileImg_read = &(img->vector_16bit())[0];
 
         /*----- PROTECTED REGION END -----*/    //	Camera::grab_image
     }

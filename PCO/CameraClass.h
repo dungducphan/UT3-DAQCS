@@ -41,118 +41,140 @@
 #include <Camera.h>
 
 
-/*----- PROTECTED REGION END -----*/	//	CameraClass.h
+/*----- PROTECTED REGION END -----*/    //	CameraClass.h
 
 
-namespace Camera_ns
-{
+namespace Camera_ns {
 /*----- PROTECTED REGION ID(CameraClass::classes for dynamic creation) ENABLED START -----*/
 
 
-/*----- PROTECTED REGION END -----*/	//	CameraClass::classes for dynamic creation
+/*----- PROTECTED REGION END -----*/    //	CameraClass::classes for dynamic creation
 
 //=========================================
 //	Define classes for attributes
 //=========================================
 //	Attribute exposureTime class definition
-class exposureTimeAttrib: public Tango::Attr
-{
-public:
-	exposureTimeAttrib():Attr("exposureTime",
-			Tango::DEV_DOUBLE, Tango::READ_WRITE) {};
-	~exposureTimeAttrib() {};
-	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
-		{(static_cast<Camera *>(dev))->read_exposureTime(att);}
-	virtual void write(Tango::DeviceImpl *dev,Tango::WAttribute &att)
-		{(static_cast<Camera *>(dev))->write_exposureTime(att);}
-	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
-		{return (static_cast<Camera *>(dev))->is_exposureTime_allowed(ty);}
-};
+    class exposureTimeAttrib : public Tango::Attr {
+    public:
+        exposureTimeAttrib() : Attr("exposureTime",
+                                    Tango::DEV_ULONG, Tango::READ_WRITE) {};
+
+        ~exposureTimeAttrib() {};
+
+        virtual void
+        read(Tango::DeviceImpl *dev, Tango::Attribute &att) { (static_cast<Camera *>(dev))->read_exposureTime(att); }
+
+        virtual void
+        write(Tango::DeviceImpl *dev, Tango::WAttribute &att) { (static_cast<Camera *>(dev))->write_exposureTime(att); }
+
+        virtual bool is_allowed(Tango::DeviceImpl *dev, Tango::AttReqType ty) {
+            return (static_cast<Camera *>(dev))->is_exposureTime_allowed(ty);
+        }
+    };
 
 //	Attribute frameRate class definition
-class frameRateAttrib: public Tango::Attr
-{
-public:
-	frameRateAttrib():Attr("frameRate",
-			Tango::DEV_FLOAT, Tango::READ_WRITE) {};
-	~frameRateAttrib() {};
-	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
-		{(static_cast<Camera *>(dev))->read_frameRate(att);}
-	virtual void write(Tango::DeviceImpl *dev,Tango::WAttribute &att)
-		{(static_cast<Camera *>(dev))->write_frameRate(att);}
-	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
-		{return (static_cast<Camera *>(dev))->is_frameRate_allowed(ty);}
-};
+    class frameRateAttrib : public Tango::Attr {
+    public:
+        frameRateAttrib() : Attr("frameRate",
+                                 Tango::DEV_FLOAT, Tango::READ_WRITE) {};
+
+        ~frameRateAttrib() {};
+
+        virtual void read(Tango::DeviceImpl *dev, Tango::Attribute &att) {
+            (static_cast<Camera *>(dev))->read_frameRate(att);
+        }
+
+        virtual void
+        write(Tango::DeviceImpl *dev, Tango::WAttribute &att) { (static_cast<Camera *>(dev))->write_frameRate(att); }
+
+        virtual bool is_allowed(Tango::DeviceImpl *dev,
+                                Tango::AttReqType ty) { return (static_cast<Camera *>(dev))->is_frameRate_allowed(ty); }
+    };
 
 //	Attribute triggerMode class definition
-class triggerModeAttrib: public Tango::Attr
-{
-public:
-	triggerModeAttrib():Attr("triggerMode",
-			Tango::DEV_SHORT, Tango::READ_WRITE) {};
-	~triggerModeAttrib() {};
-	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
-		{(static_cast<Camera *>(dev))->read_triggerMode(att);}
-	virtual void write(Tango::DeviceImpl *dev,Tango::WAttribute &att)
-		{(static_cast<Camera *>(dev))->write_triggerMode(att);}
-	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
-		{return (static_cast<Camera *>(dev))->is_triggerMode_allowed(ty);}
-};
+    class triggerModeAttrib : public Tango::Attr {
+    public:
+        triggerModeAttrib() : Attr("triggerMode",
+                                   Tango::DEV_USHORT, Tango::READ_WRITE) {};
+
+        ~triggerModeAttrib() {};
+
+        virtual void
+        read(Tango::DeviceImpl *dev, Tango::Attribute &att) { (static_cast<Camera *>(dev))->read_triggerMode(att); }
+
+        virtual void
+        write(Tango::DeviceImpl *dev, Tango::WAttribute &att) { (static_cast<Camera *>(dev))->write_triggerMode(att); }
+
+        virtual bool is_allowed(Tango::DeviceImpl *dev, Tango::AttReqType ty) {
+            return (static_cast<Camera *>(dev))->is_triggerMode_allowed(ty);
+        }
+    };
 
 //	Attribute Gain class definition
-class GainAttrib: public Tango::Attr
-{
-public:
-	GainAttrib():Attr("Gain",
-			Tango::DEV_FLOAT, Tango::READ_WRITE) {};
-	~GainAttrib() {};
-	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
-		{(static_cast<Camera *>(dev))->read_Gain(att);}
-	virtual void write(Tango::DeviceImpl *dev,Tango::WAttribute &att)
-		{(static_cast<Camera *>(dev))->write_Gain(att);}
-	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
-		{return (static_cast<Camera *>(dev))->is_Gain_allowed(ty);}
-};
+    class GainAttrib : public Tango::Attr {
+    public:
+        GainAttrib() : Attr("Gain",
+                            Tango::DEV_FLOAT, Tango::READ_WRITE) {};
+
+        ~GainAttrib() {};
+
+        virtual void read(Tango::DeviceImpl *dev, Tango::Attribute &att) {
+            (static_cast<Camera *>(dev))->read_Gain(att);
+        }
+
+        virtual void write(Tango::DeviceImpl *dev, Tango::WAttribute &att) {
+            (static_cast<Camera *>(dev))->write_Gain(att);
+        }
+
+        virtual bool is_allowed(Tango::DeviceImpl *dev, Tango::AttReqType ty) {
+            return (static_cast<Camera *>(dev))->is_Gain_allowed(ty);
+        }
+    };
 
 //	Attribute beamProfileImg class definition
-class beamProfileImgAttrib: public Tango::ImageAttr
-{
-public:
-	beamProfileImgAttrib():ImageAttr("beamProfileImg",
-			Tango::DEV_SHORT, Tango::READ, 1280, 1024) {};
-	~beamProfileImgAttrib() {};
-	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
-		{(static_cast<Camera *>(dev))->read_beamProfileImg(att);}
-	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
-		{return (static_cast<Camera *>(dev))->is_beamProfileImg_allowed(ty);}
-};
+    class beamProfileImgAttrib : public Tango::ImageAttr {
+    public:
+        beamProfileImgAttrib() : ImageAttr("beamProfileImg",
+                                           Tango::DEV_USHORT, Tango::READ, 1392, 1024) {};
+
+        ~beamProfileImgAttrib() {};
+
+        virtual void
+        read(Tango::DeviceImpl *dev, Tango::Attribute &att) { (static_cast<Camera *>(dev))->read_beamProfileImg(att); }
+
+        virtual bool is_allowed(Tango::DeviceImpl *dev, Tango::AttReqType ty) {
+            return (static_cast<Camera *>(dev))->is_beamProfileImg_allowed(ty);
+        }
+    };
 
 
 //=========================================
 //	Define classes for commands
 //=========================================
 //	Command GrabImage class definition
-class GrabImageClass : public Tango::Command
-{
-public:
-	GrabImageClass(const char   *name,
-	               Tango::CmdArgType in,
-				   Tango::CmdArgType out,
-				   const char        *in_desc,
-				   const char        *out_desc,
-				   Tango::DispLevel  level)
-	:Command(name,in,out,in_desc,out_desc, level)	{};
+    class GrabImageClass : public Tango::Command {
+    public:
+        GrabImageClass(const char *name,
+                       Tango::CmdArgType in,
+                       Tango::CmdArgType out,
+                       const char *in_desc,
+                       const char *out_desc,
+                       Tango::DispLevel level)
+                : Command(name, in, out, in_desc, out_desc, level) {};
 
-	GrabImageClass(const char   *name,
-	               Tango::CmdArgType in,
-				   Tango::CmdArgType out)
-	:Command(name,in,out)	{};
-	~GrabImageClass() {};
-	
-	virtual CORBA::Any *execute (Tango::DeviceImpl *dev, const CORBA::Any &any);
-	virtual bool is_allowed (Tango::DeviceImpl *dev, const CORBA::Any &any)
-	{return (static_cast<Camera *>(dev))->is_GrabImage_allowed(any);}
-};
+        GrabImageClass(const char *name,
+                       Tango::CmdArgType in,
+                       Tango::CmdArgType out)
+                : Command(name, in, out) {};
+
+        ~GrabImageClass() {};
+
+        virtual CORBA::Any *execute(Tango::DeviceImpl *dev, const CORBA::Any &any);
+
+        virtual bool is_allowed(Tango::DeviceImpl *dev, const CORBA::Any &any) {
+            return (static_cast<Camera *>(dev))->is_GrabImage_allowed(any);
+        }
+    };
 
 
 /**
@@ -160,50 +182,69 @@ public:
  */
 
 #ifdef _TG_WINDOWS_
-class __declspec(dllexport)  CameraClass : public Tango::DeviceClass
+    class __declspec(dllexport)  CameraClass : public Tango::DeviceClass
 #else
-class CameraClass : public Tango::DeviceClass
+
+    class CameraClass : public Tango::DeviceClass
 #endif
-{
-	/*----- PROTECTED REGION ID(CameraClass::Additionnal DServer data members) ENABLED START -----*/
-	
-	
-	/*----- PROTECTED REGION END -----*/	//	CameraClass::Additionnal DServer data members
+    {
+        /*----- PROTECTED REGION ID(CameraClass::Additionnal DServer data members) ENABLED START -----*/
 
-	public:
-		//	write class properties data members
-		Tango::DbData	cl_prop;
-		Tango::DbData	cl_def_prop;
-		Tango::DbData	dev_def_prop;
-	
-		//	Method prototypes
-		static CameraClass *init(const char *);
-		static CameraClass *instance();
-		~CameraClass();
-		Tango::DbDatum	get_class_property(string &);
-		Tango::DbDatum	get_default_device_property(string &);
-		Tango::DbDatum	get_default_class_property(string &);
-	
-	protected:
-		CameraClass(string &);
-		static CameraClass *_instance;
-		void command_factory();
-		void attribute_factory(vector<Tango::Attr *> &);
-		void pipe_factory();
-		void write_class_property();
-		void set_default_property();
-		void get_class_property();
-		string get_cvstag();
-		string get_cvsroot();
-	
-	private:
-		void device_factory(const Tango::DevVarStringArray *);
-		void create_static_attribute_list(vector<Tango::Attr *> &);
-		void erase_dynamic_attributes(const Tango::DevVarStringArray *,vector<Tango::Attr *> &);
-		vector<string>	defaultAttList;
-		Tango::Attr *get_attr_object_by_name(vector<Tango::Attr *> &att_list, string attname);
-};
 
-}	//	End of namespace
+        /*----- PROTECTED REGION END -----*/    //	CameraClass::Additionnal DServer data members
+
+    public:
+        //	write class properties data members
+        Tango::DbData cl_prop;
+        Tango::DbData cl_def_prop;
+        Tango::DbData dev_def_prop;
+
+        //	Method prototypes
+        static CameraClass *init(const char *);
+
+        static CameraClass *instance();
+
+        ~CameraClass();
+
+        Tango::DbDatum get_class_property(string &);
+
+        Tango::DbDatum get_default_device_property(string &);
+
+        Tango::DbDatum get_default_class_property(string &);
+
+    protected:
+        CameraClass(string &);
+
+        static CameraClass *_instance;
+
+        void command_factory();
+
+        void attribute_factory(vector<Tango::Attr *> &);
+
+        void pipe_factory();
+
+        void write_class_property();
+
+        void set_default_property();
+
+        void get_class_property();
+
+        string get_cvstag();
+
+        string get_cvsroot();
+
+    private:
+        void device_factory(const Tango::DevVarStringArray *);
+
+        void create_static_attribute_list(vector<Tango::Attr *> &);
+
+        void erase_dynamic_attributes(const Tango::DevVarStringArray *, vector<Tango::Attr *> &);
+
+        vector<string> defaultAttList;
+
+        Tango::Attr *get_attr_object_by_name(vector<Tango::Attr *> &att_list, string attname);
+    };
+
+}    //	End of namespace
 
 #endif   //	Camera_H
