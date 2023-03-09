@@ -113,6 +113,8 @@ namespace Camera_ns {
         /*----- PROTECTED REGION ID(Camera::delete_device) ENABLED START -----*/
 
         //	Delete device allocated objects
+        delete cam;
+        delete img;
 
         /*----- PROTECTED REGION END -----*/    //	Camera::delete_device
         delete[] attr_exposureTime_read;
@@ -148,9 +150,9 @@ namespace Camera_ns {
 
         //	Initialize device
         try {
-            pco::Camera cam;
-            pco::Image img;
-            cam.setExposureTime(0.01);
+            cam = new pco::Camera();
+            img = new pco::Image();
+            cam->setExposureTime(0.01);
         } catch (pco::CameraException &err) {
             std::cout << "Error Code: " << err.error_code() << std::endl;
             std::cout << err.what() << std::endl;
@@ -186,6 +188,7 @@ namespace Camera_ns {
         /*----- PROTECTED REGION ID(Camera::read_attr_hardware) ENABLED START -----*/
 
         //	Add your own code
+        *attr_exposureTime_read = (Tango::DevLong) cam->getExposureTime();
 
         /*----- PROTECTED REGION END -----*/    //	Camera::read_attr_hardware
     }
@@ -394,7 +397,8 @@ namespace Camera_ns {
         /*----- PROTECTED REGION ID(Camera::grab_image) ENABLED START -----*/
 
         //	Add your own code
-        cam.image(img, 1, pco::DataFormat::BGR8);
+        cam->record(10, pco::RecordMode::sequence);
+        cam->image(*img, 1, pco::DataFormat::BGR8);
 
         /*----- PROTECTED REGION END -----*/    //	Camera::grab_image
     }

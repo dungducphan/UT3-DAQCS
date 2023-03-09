@@ -59,8 +59,8 @@ namespace Camera_ns {
 /*----- PROTECTED REGION ID(Camera::Data Members) ENABLED START -----*/
 
 //	Add your own data members
-        pco::Camera cam;
-        pco::Image img;
+        pco::Camera* cam;
+        pco::Image* img;
 
 /*----- PROTECTED REGION END -----*/    //	Camera::Data Members
 
