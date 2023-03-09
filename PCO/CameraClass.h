@@ -59,7 +59,7 @@ class exposureTimeAttrib: public Tango::Attr
 {
 public:
 	exposureTimeAttrib():Attr("exposureTime",
-			Tango::DEV_LONG, Tango::READ_WRITE) {};
+			Tango::DEV_DOUBLE, Tango::READ_WRITE) {};
 	~exposureTimeAttrib() {};
 	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
 		{(static_cast<Camera *>(dev))->read_exposureTime(att);}
