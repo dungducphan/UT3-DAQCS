@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="ASCII"?>
+<pogoDsl:PogoSystem xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:pogoDsl="http://www.esrf.fr/tango/pogo/PogoDsl">
+  <multiClasses pogoRevision="9.6" name="MeasurementSystem" sourcePath="/home/dphan/Workspace/TestMultipleDeviceClass" description="" filestogenerate="XMI   file,Code files,Protected Regions">
+    <classes classname="DeviceB" sourcePath="./DevB">
+      <inheritances classname="Device_Impl" sourcePath=""/>
+    </classes>
+    <classes classname="DeviceA" sourcePath="./DevA">
+      <inheritances classname="Device_Impl" sourcePath=""/>
+    </classes>
+    <preferences makefileHome="/usr/local/tango/share/pogo/preferences"/>
+  </multiClasses>
+</pogoDsl:PogoSystem>
