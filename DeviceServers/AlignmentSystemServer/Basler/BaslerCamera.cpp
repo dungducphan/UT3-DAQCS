@@ -37,7 +37,7 @@
 #include <BaslerCamera.h>
 #include <BaslerCameraClass.h>
 
-/*----- PROTECTED REGION END -----*/	//	BaslerCamera.cpp
+/*----- PROTECTED REGION END -----*/    //	BaslerCamera.cpp
 
 /**
  *  BaslerCamera class description:
@@ -48,11 +48,12 @@
 //  The following table gives the correspondence
 //  between command and method names.
 //
-//  Command name  |  Method name
+//  Command name   |  Method name
 //================================================================
-//  State         |  Inherited (no method)
-//  Status        |  Inherited (no method)
-//  GrabImage     |  grab_image
+//  State          |  Inherited (no method)
+//  Status         |  Inherited (no method)
+//  GrabImage      |  grab_image
+//  ConnectCamera  |  connect_camera
 //================================================================
 
 //================================================================
@@ -65,13 +66,12 @@
 //  BeamProfileImg  |  Tango::DevUShort	Image  ( max = 1280 x 1024)
 //================================================================
 
-namespace BaslerCamera_ns
-{
+namespace BaslerCamera_ns {
 /*----- PROTECTED REGION ID(BaslerCamera::namespace_starting) ENABLED START -----*/
 
 //	static initializations
 
-/*----- PROTECTED REGION END -----*/	//	BaslerCamera::namespace_starting
+/*----- PROTECTED REGION END -----*/    //	BaslerCamera::namespace_starting
 
 //--------------------------------------------------------
 /**
@@ -80,32 +80,34 @@ namespace BaslerCamera_ns
  *                implementing the classBaslerCamera
  */
 //--------------------------------------------------------
-BaslerCamera::BaslerCamera(Tango::DeviceClass *cl, string &s)
- : TANGO_BASE_CLASS(cl, s.c_str())
-{
-	/*----- PROTECTED REGION ID(BaslerCamera::constructor_1) ENABLED START -----*/
-	init_device();
-	
-	/*----- PROTECTED REGION END -----*/	//	BaslerCamera::constructor_1
-}
+    BaslerCamera::BaslerCamera(Tango::DeviceClass *cl, string &s)
+            : TANGO_BASE_CLASS(cl, s.c_str()),
+              camera(nullptr) {
+        /*----- PROTECTED REGION ID(BaslerCamera::constructor_1) ENABLED START -----*/
+        init_device();
+
+        /*----- PROTECTED REGION END -----*/    //	BaslerCamera::constructor_1
+    }
+
 //--------------------------------------------------------
-BaslerCamera::BaslerCamera(Tango::DeviceClass *cl, const char *s)
- : TANGO_BASE_CLASS(cl, s)
-{
-	/*----- PROTECTED REGION ID(BaslerCamera::constructor_2) ENABLED START -----*/
-	init_device();
-	
-	/*----- PROTECTED REGION END -----*/	//	BaslerCamera::constructor_2
-}
+    BaslerCamera::BaslerCamera(Tango::DeviceClass *cl, const char *s)
+            : TANGO_BASE_CLASS(cl, s),
+              camera(nullptr) {
+        /*----- PROTECTED REGION ID(BaslerCamera::constructor_2) ENABLED START -----*/
+        init_device();
+
+        /*----- PROTECTED REGION END -----*/    //	BaslerCamera::constructor_2
+    }
+
 //--------------------------------------------------------
-BaslerCamera::BaslerCamera(Tango::DeviceClass *cl, const char *s, const char *d)
- : TANGO_BASE_CLASS(cl, s, d)
-{
-	/*----- PROTECTED REGION ID(BaslerCamera::constructor_3) ENABLED START -----*/
-	init_device();
-	
-	/*----- PROTECTED REGION END -----*/	//	BaslerCamera::constructor_3
-}
+    BaslerCamera::BaslerCamera(Tango::DeviceClass *cl, const char *s, const char *d)
+            : TANGO_BASE_CLASS(cl, s, d),
+              camera(nullptr) {
+        /*----- PROTECTED REGION ID(BaslerCamera::constructor_3) ENABLED START -----*/
+        init_device();
+
+        /*----- PROTECTED REGION END -----*/    //	BaslerCamera::constructor_3
+    }
 
 //--------------------------------------------------------
 /**
@@ -113,20 +115,20 @@ BaslerCamera::BaslerCamera(Tango::DeviceClass *cl, const char *s, const char *d)
  *	Description : will be called at device destruction or at init command
  */
 //--------------------------------------------------------
-void BaslerCamera::delete_device()
-{
-	DEBUG_STREAM << "BaslerCamera::delete_device() " << device_name << endl;
-	/*----- PROTECTED REGION ID(BaslerCamera::delete_device) ENABLED START -----*/
-	
-	//	Delete device allocated objects
-	
-	/*----- PROTECTED REGION END -----*/	//	BaslerCamera::delete_device
-	delete[] attr_ExposureTime_read;
-	delete[] attr_FrameRate_read;
-	delete[] attr_Gain_read;
-	delete[] attr_TriggerMode_read;
-	delete[] attr_BeamProfileImg_read;
-}
+    void BaslerCamera::delete_device() {
+        DEBUG_STREAM << "BaslerCamera::delete_device() " << device_name << endl;
+        /*----- PROTECTED REGION ID(BaslerCamera::delete_device) ENABLED START -----*/
+
+        //	Delete device allocated objects
+        delete camera;
+
+        /*----- PROTECTED REGION END -----*/    //	BaslerCamera::delete_device
+        delete[] attr_ExposureTime_read;
+        delete[] attr_FrameRate_read;
+        delete[] attr_Gain_read;
+        delete[] attr_TriggerMode_read;
+        delete[] attr_BeamProfileImg_read;
+    }
 
 //--------------------------------------------------------
 /**
@@ -134,28 +136,33 @@ void BaslerCamera::delete_device()
  *	Description : will be called at device initialization.
  */
 //--------------------------------------------------------
-void BaslerCamera::init_device()
-{
-	DEBUG_STREAM << "BaslerCamera::init_device() create device " << device_name << endl;
-	/*----- PROTECTED REGION ID(BaslerCamera::init_device_before) ENABLED START -----*/
-	
-	//	Initialization before get_device_property() call
-	
-	/*----- PROTECTED REGION END -----*/	//	BaslerCamera::init_device_before
-	
-	//	No device property to be read from database
-	
-	attr_ExposureTime_read = new Tango::DevDouble[1];
-	attr_FrameRate_read = new Tango::DevDouble[1];
-	attr_Gain_read = new Tango::DevDouble[1];
-	attr_TriggerMode_read = new Tango::DevUShort[1];
-	attr_BeamProfileImg_read = new Tango::DevUShort[1280*1024];
-	/*----- PROTECTED REGION ID(BaslerCamera::init_device) ENABLED START -----*/
-	
-	//	Initialize device
-	
-	/*----- PROTECTED REGION END -----*/	//	BaslerCamera::init_device
-}
+    void BaslerCamera::init_device() {
+        DEBUG_STREAM << "BaslerCamera::init_device() create device " << device_name << endl;
+        /*----- PROTECTED REGION ID(BaslerCamera::init_device_before) ENABLED START -----*/
+
+        //	Initialization before get_device_property() call
+
+        /*----- PROTECTED REGION END -----*/    //	BaslerCamera::init_device_before
+
+        //	No device property to be read from database
+
+        attr_ExposureTime_read = new Tango::DevDouble[1];
+        attr_FrameRate_read = new Tango::DevDouble[1];
+        attr_Gain_read = new Tango::DevDouble[1];
+        attr_TriggerMode_read = new Tango::DevUShort[1];
+        attr_BeamProfileImg_read = new Tango::DevUShort[1280 * 1024];
+        /*----- PROTECTED REGION ID(BaslerCamera::init_device) ENABLED START -----*/
+
+        //	Initialize device
+        unsigned int timeOut = 0;
+        while (camera == nullptr && timeOut <= 10) {
+            timeOut++;
+            std::cout << "Basler camera connect attempt #1" << timeOut << "..." << std::endl;
+            connect_camera();
+        }
+
+        /*----- PROTECTED REGION END -----*/    //	BaslerCamera::init_device
+    }
 
 
 //--------------------------------------------------------
@@ -164,15 +171,14 @@ void BaslerCamera::init_device()
  *	Description : method always executed before any command is executed
  */
 //--------------------------------------------------------
-void BaslerCamera::always_executed_hook()
-{
-	DEBUG_STREAM << "BaslerCamera::always_executed_hook()  " << device_name << endl;
-	/*----- PROTECTED REGION ID(BaslerCamera::always_executed_hook) ENABLED START -----*/
-	
-	//	code always executed before all requests
-	
-	/*----- PROTECTED REGION END -----*/	//	BaslerCamera::always_executed_hook
-}
+    void BaslerCamera::always_executed_hook() {
+        DEBUG_STREAM << "BaslerCamera::always_executed_hook()  " << device_name << endl;
+        /*----- PROTECTED REGION ID(BaslerCamera::always_executed_hook) ENABLED START -----*/
+
+        //	code always executed before all requests
+
+        /*----- PROTECTED REGION END -----*/    //	BaslerCamera::always_executed_hook
+    }
 
 //--------------------------------------------------------
 /**
@@ -180,30 +186,28 @@ void BaslerCamera::always_executed_hook()
  *	Description : Hardware acquisition for attributes
  */
 //--------------------------------------------------------
-void BaslerCamera::read_attr_hardware(TANGO_UNUSED(vector<long> &attr_list))
-{
-	DEBUG_STREAM << "BaslerCamera::read_attr_hardware(vector<long> &attr_list) entering... " << endl;
-	/*----- PROTECTED REGION ID(BaslerCamera::read_attr_hardware) ENABLED START -----*/
-	
-	//	Add your own code
-	
-	/*----- PROTECTED REGION END -----*/	//	BaslerCamera::read_attr_hardware
-}
+    void BaslerCamera::read_attr_hardware(TANGO_UNUSED(vector<long> &attr_list)) {
+        DEBUG_STREAM << "BaslerCamera::read_attr_hardware(vector<long> &attr_list) entering... " << endl;
+        /*----- PROTECTED REGION ID(BaslerCamera::read_attr_hardware) ENABLED START -----*/
+
+        //	Add your own code
+
+        /*----- PROTECTED REGION END -----*/    //	BaslerCamera::read_attr_hardware
+    }
 //--------------------------------------------------------
 /**
  *	Method      : BaslerCamera::write_attr_hardware()
  *	Description : Hardware writing for attributes
  */
 //--------------------------------------------------------
-void BaslerCamera::write_attr_hardware(TANGO_UNUSED(vector<long> &attr_list))
-{
-	DEBUG_STREAM << "BaslerCamera::write_attr_hardware(vector<long> &attr_list) entering... " << endl;
-	/*----- PROTECTED REGION ID(BaslerCamera::write_attr_hardware) ENABLED START -----*/
-	
-	//	Add your own code
-	
-	/*----- PROTECTED REGION END -----*/	//	BaslerCamera::write_attr_hardware
-}
+    void BaslerCamera::write_attr_hardware(TANGO_UNUSED(vector<long> &attr_list)) {
+        DEBUG_STREAM << "BaslerCamera::write_attr_hardware(vector<long> &attr_list) entering... " << endl;
+        /*----- PROTECTED REGION ID(BaslerCamera::write_attr_hardware) ENABLED START -----*/
+
+        //	Add your own code
+
+        /*----- PROTECTED REGION END -----*/    //	BaslerCamera::write_attr_hardware
+    }
 
 //--------------------------------------------------------
 /**
@@ -214,15 +218,14 @@ void BaslerCamera::write_attr_hardware(TANGO_UNUSED(vector<long> &attr_list))
  *	Attr type:	Scalar
  */
 //--------------------------------------------------------
-void BaslerCamera::read_ExposureTime(Tango::Attribute &attr)
-{
-	DEBUG_STREAM << "BaslerCamera::read_ExposureTime(Tango::Attribute &attr) entering... " << endl;
-	/*----- PROTECTED REGION ID(BaslerCamera::read_ExposureTime) ENABLED START -----*/
-	//	Set the attribute value
-	attr.set_value(attr_ExposureTime_read);
-	
-	/*----- PROTECTED REGION END -----*/	//	BaslerCamera::read_ExposureTime
-}
+    void BaslerCamera::read_ExposureTime(Tango::Attribute &attr) {
+        DEBUG_STREAM << "BaslerCamera::read_ExposureTime(Tango::Attribute &attr) entering... " << endl;
+        /*----- PROTECTED REGION ID(BaslerCamera::read_ExposureTime) ENABLED START -----*/
+        //	Set the attribute value
+        attr.set_value(attr_ExposureTime_read);
+
+        /*----- PROTECTED REGION END -----*/    //	BaslerCamera::read_ExposureTime
+    }
 //--------------------------------------------------------
 /**
  *	Write attribute ExposureTime related method
@@ -232,17 +235,16 @@ void BaslerCamera::read_ExposureTime(Tango::Attribute &attr)
  *	Attr type:	Scalar
  */
 //--------------------------------------------------------
-void BaslerCamera::write_ExposureTime(Tango::WAttribute &attr)
-{
-	DEBUG_STREAM << "BaslerCamera::write_ExposureTime(Tango::WAttribute &attr) entering... " << endl;
-	//	Retrieve write value
-	Tango::DevDouble	w_val;
-	attr.get_write_value(w_val);
-	/*----- PROTECTED REGION ID(BaslerCamera::write_ExposureTime) ENABLED START -----*/
-	
-	
-	/*----- PROTECTED REGION END -----*/	//	BaslerCamera::write_ExposureTime
-}
+    void BaslerCamera::write_ExposureTime(Tango::WAttribute &attr) {
+        DEBUG_STREAM << "BaslerCamera::write_ExposureTime(Tango::WAttribute &attr) entering... " << endl;
+        //	Retrieve write value
+        Tango::DevDouble w_val;
+        attr.get_write_value(w_val);
+        /*----- PROTECTED REGION ID(BaslerCamera::write_ExposureTime) ENABLED START -----*/
+
+
+        /*----- PROTECTED REGION END -----*/    //	BaslerCamera::write_ExposureTime
+    }
 //--------------------------------------------------------
 /**
  *	Read attribute FrameRate related method
@@ -252,15 +254,14 @@ void BaslerCamera::write_ExposureTime(Tango::WAttribute &attr)
  *	Attr type:	Scalar
  */
 //--------------------------------------------------------
-void BaslerCamera::read_FrameRate(Tango::Attribute &attr)
-{
-	DEBUG_STREAM << "BaslerCamera::read_FrameRate(Tango::Attribute &attr) entering... " << endl;
-	/*----- PROTECTED REGION ID(BaslerCamera::read_FrameRate) ENABLED START -----*/
-	//	Set the attribute value
-	attr.set_value(attr_FrameRate_read);
-	
-	/*----- PROTECTED REGION END -----*/	//	BaslerCamera::read_FrameRate
-}
+    void BaslerCamera::read_FrameRate(Tango::Attribute &attr) {
+        DEBUG_STREAM << "BaslerCamera::read_FrameRate(Tango::Attribute &attr) entering... " << endl;
+        /*----- PROTECTED REGION ID(BaslerCamera::read_FrameRate) ENABLED START -----*/
+        //	Set the attribute value
+        attr.set_value(attr_FrameRate_read);
+
+        /*----- PROTECTED REGION END -----*/    //	BaslerCamera::read_FrameRate
+    }
 //--------------------------------------------------------
 /**
  *	Write attribute FrameRate related method
@@ -270,17 +271,16 @@ void BaslerCamera::read_FrameRate(Tango::Attribute &attr)
  *	Attr type:	Scalar
  */
 //--------------------------------------------------------
-void BaslerCamera::write_FrameRate(Tango::WAttribute &attr)
-{
-	DEBUG_STREAM << "BaslerCamera::write_FrameRate(Tango::WAttribute &attr) entering... " << endl;
-	//	Retrieve write value
-	Tango::DevDouble	w_val;
-	attr.get_write_value(w_val);
-	/*----- PROTECTED REGION ID(BaslerCamera::write_FrameRate) ENABLED START -----*/
-	
-	
-	/*----- PROTECTED REGION END -----*/	//	BaslerCamera::write_FrameRate
-}
+    void BaslerCamera::write_FrameRate(Tango::WAttribute &attr) {
+        DEBUG_STREAM << "BaslerCamera::write_FrameRate(Tango::WAttribute &attr) entering... " << endl;
+        //	Retrieve write value
+        Tango::DevDouble w_val;
+        attr.get_write_value(w_val);
+        /*----- PROTECTED REGION ID(BaslerCamera::write_FrameRate) ENABLED START -----*/
+
+
+        /*----- PROTECTED REGION END -----*/    //	BaslerCamera::write_FrameRate
+    }
 //--------------------------------------------------------
 /**
  *	Read attribute Gain related method
@@ -290,15 +290,14 @@ void BaslerCamera::write_FrameRate(Tango::WAttribute &attr)
  *	Attr type:	Scalar
  */
 //--------------------------------------------------------
-void BaslerCamera::read_Gain(Tango::Attribute &attr)
-{
-	DEBUG_STREAM << "BaslerCamera::read_Gain(Tango::Attribute &attr) entering... " << endl;
-	/*----- PROTECTED REGION ID(BaslerCamera::read_Gain) ENABLED START -----*/
-	//	Set the attribute value
-	attr.set_value(attr_Gain_read);
-	
-	/*----- PROTECTED REGION END -----*/	//	BaslerCamera::read_Gain
-}
+    void BaslerCamera::read_Gain(Tango::Attribute &attr) {
+        DEBUG_STREAM << "BaslerCamera::read_Gain(Tango::Attribute &attr) entering... " << endl;
+        /*----- PROTECTED REGION ID(BaslerCamera::read_Gain) ENABLED START -----*/
+        //	Set the attribute value
+        attr.set_value(attr_Gain_read);
+
+        /*----- PROTECTED REGION END -----*/    //	BaslerCamera::read_Gain
+    }
 //--------------------------------------------------------
 /**
  *	Write attribute Gain related method
@@ -308,17 +307,16 @@ void BaslerCamera::read_Gain(Tango::Attribute &attr)
  *	Attr type:	Scalar
  */
 //--------------------------------------------------------
-void BaslerCamera::write_Gain(Tango::WAttribute &attr)
-{
-	DEBUG_STREAM << "BaslerCamera::write_Gain(Tango::WAttribute &attr) entering... " << endl;
-	//	Retrieve write value
-	Tango::DevDouble	w_val;
-	attr.get_write_value(w_val);
-	/*----- PROTECTED REGION ID(BaslerCamera::write_Gain) ENABLED START -----*/
-	
-	
-	/*----- PROTECTED REGION END -----*/	//	BaslerCamera::write_Gain
-}
+    void BaslerCamera::write_Gain(Tango::WAttribute &attr) {
+        DEBUG_STREAM << "BaslerCamera::write_Gain(Tango::WAttribute &attr) entering... " << endl;
+        //	Retrieve write value
+        Tango::DevDouble w_val;
+        attr.get_write_value(w_val);
+        /*----- PROTECTED REGION ID(BaslerCamera::write_Gain) ENABLED START -----*/
+
+
+        /*----- PROTECTED REGION END -----*/    //	BaslerCamera::write_Gain
+    }
 //--------------------------------------------------------
 /**
  *	Read attribute TriggerMode related method
@@ -328,15 +326,14 @@ void BaslerCamera::write_Gain(Tango::WAttribute &attr)
  *	Attr type:	Scalar
  */
 //--------------------------------------------------------
-void BaslerCamera::read_TriggerMode(Tango::Attribute &attr)
-{
-	DEBUG_STREAM << "BaslerCamera::read_TriggerMode(Tango::Attribute &attr) entering... " << endl;
-	/*----- PROTECTED REGION ID(BaslerCamera::read_TriggerMode) ENABLED START -----*/
-	//	Set the attribute value
-	attr.set_value(attr_TriggerMode_read);
-	
-	/*----- PROTECTED REGION END -----*/	//	BaslerCamera::read_TriggerMode
-}
+    void BaslerCamera::read_TriggerMode(Tango::Attribute &attr) {
+        DEBUG_STREAM << "BaslerCamera::read_TriggerMode(Tango::Attribute &attr) entering... " << endl;
+        /*----- PROTECTED REGION ID(BaslerCamera::read_TriggerMode) ENABLED START -----*/
+        //	Set the attribute value
+        attr.set_value(attr_TriggerMode_read);
+
+        /*----- PROTECTED REGION END -----*/    //	BaslerCamera::read_TriggerMode
+    }
 //--------------------------------------------------------
 /**
  *	Write attribute TriggerMode related method
@@ -346,17 +343,16 @@ void BaslerCamera::read_TriggerMode(Tango::Attribute &attr)
  *	Attr type:	Scalar
  */
 //--------------------------------------------------------
-void BaslerCamera::write_TriggerMode(Tango::WAttribute &attr)
-{
-	DEBUG_STREAM << "BaslerCamera::write_TriggerMode(Tango::WAttribute &attr) entering... " << endl;
-	//	Retrieve write value
-	Tango::DevUShort	w_val;
-	attr.get_write_value(w_val);
-	/*----- PROTECTED REGION ID(BaslerCamera::write_TriggerMode) ENABLED START -----*/
-	
-	
-	/*----- PROTECTED REGION END -----*/	//	BaslerCamera::write_TriggerMode
-}
+    void BaslerCamera::write_TriggerMode(Tango::WAttribute &attr) {
+        DEBUG_STREAM << "BaslerCamera::write_TriggerMode(Tango::WAttribute &attr) entering... " << endl;
+        //	Retrieve write value
+        Tango::DevUShort w_val;
+        attr.get_write_value(w_val);
+        /*----- PROTECTED REGION ID(BaslerCamera::write_TriggerMode) ENABLED START -----*/
+
+
+        /*----- PROTECTED REGION END -----*/    //	BaslerCamera::write_TriggerMode
+    }
 //--------------------------------------------------------
 /**
  *	Read attribute BeamProfileImg related method
@@ -366,15 +362,14 @@ void BaslerCamera::write_TriggerMode(Tango::WAttribute &attr)
  *	Attr type:	Image max = 1280 x 1024
  */
 //--------------------------------------------------------
-void BaslerCamera::read_BeamProfileImg(Tango::Attribute &attr)
-{
-	DEBUG_STREAM << "BaslerCamera::read_BeamProfileImg(Tango::Attribute &attr) entering... " << endl;
-	/*----- PROTECTED REGION ID(BaslerCamera::read_BeamProfileImg) ENABLED START -----*/
-	//	Set the attribute value
-	attr.set_value(attr_BeamProfileImg_read, 1280, 1024);
-	
-	/*----- PROTECTED REGION END -----*/	//	BaslerCamera::read_BeamProfileImg
-}
+    void BaslerCamera::read_BeamProfileImg(Tango::Attribute &attr) {
+        DEBUG_STREAM << "BaslerCamera::read_BeamProfileImg(Tango::Attribute &attr) entering... " << endl;
+        /*----- PROTECTED REGION ID(BaslerCamera::read_BeamProfileImg) ENABLED START -----*/
+        //	Set the attribute value
+        attr.set_value(attr_BeamProfileImg_read, 1280, 1024);
+
+        /*----- PROTECTED REGION END -----*/    //	BaslerCamera::read_BeamProfileImg
+    }
 
 //--------------------------------------------------------
 /**
@@ -383,14 +378,13 @@ void BaslerCamera::read_BeamProfileImg(Tango::Attribute &attr)
  *                for specified device.
  */
 //--------------------------------------------------------
-void BaslerCamera::add_dynamic_attributes()
-{
-	/*----- PROTECTED REGION ID(BaslerCamera::add_dynamic_attributes) ENABLED START -----*/
-	
-	//	Add your own code to create and add dynamic attributes if any
-	
-	/*----- PROTECTED REGION END -----*/	//	BaslerCamera::add_dynamic_attributes
-}
+    void BaslerCamera::add_dynamic_attributes() {
+        /*----- PROTECTED REGION ID(BaslerCamera::add_dynamic_attributes) ENABLED START -----*/
+
+        //	Add your own code to create and add dynamic attributes if any
+
+        /*----- PROTECTED REGION END -----*/    //	BaslerCamera::add_dynamic_attributes
+    }
 
 //--------------------------------------------------------
 /**
@@ -399,15 +393,75 @@ void BaslerCamera::add_dynamic_attributes()
  *
  */
 //--------------------------------------------------------
-void BaslerCamera::grab_image()
-{
-	DEBUG_STREAM << "BaslerCamera::GrabImage()  - " << device_name << endl;
-	/*----- PROTECTED REGION ID(BaslerCamera::grab_image) ENABLED START -----*/
-	
-	//	Add your own code
-	
-	/*----- PROTECTED REGION END -----*/	//	BaslerCamera::grab_image
-}
+    void BaslerCamera::grab_image() {
+        DEBUG_STREAM << "BaslerCamera::GrabImage()  - " << device_name << endl;
+        /*----- PROTECTED REGION ID(BaslerCamera::grab_image) ENABLED START -----*/
+
+        //	Add your own code
+
+        if (camera == nullptr) connect_camera();
+
+        // Start the grabbing of c_countOfImagesToGrab images.
+        // The camera device is parameterized with a default configuration which
+        // sets up free-running continuous acquisition.
+        camera->StartGrabbing(1);
+
+        // Camera.StopGrabbing() is called automatically by the RetrieveResult() method
+        // when c_countOfImagesToGrab images have been retrieved.
+        while (camera->IsGrabbing()) {
+            // Wait for an image and then retrieve it. A timeout of 5000 ms is used.
+            camera->RetrieveResult(500, ptrGrabResult, Pylon::TimeoutHandling_ThrowException);
+
+            // If the image grabbed successfully
+            if (ptrGrabResult->GrabSucceeded()) {
+                // Access the image data.
+#ifdef DEBUG_MODE
+                std::cout << "SizeX: " << ptrGrabResult->GetWidth() << std::endl;
+                std::cout << "SizeY: " << ptrGrabResult->GetHeight() << std::endl;
+#endif
+                const uint8_t *pImageBuffer = (uint8_t *) ptrGrabResult->GetBuffer();
+#ifdef DEBUG_MODE
+                std::cout << "Gray value of first pixel: " << (uint32_t) pImageBuffer[0] << std::endl << std::endl;
+#endif
+            } else {
+                DEBUG_STREAM << "Error: " << std::hex << ptrGrabResult->GetErrorCode() << std::dec << " " << ptrGrabResult->GetErrorDescription() << std::endl;
+#ifdef DEBUG_MODE
+                std::cout << "Error: " << std::hex << ptrGrabResult->GetErrorCode() << std::dec << " " << ptrGrabResult->GetErrorDescription() << std::endl;
+#endif
+            }
+        }
+
+        /*----- PROTECTED REGION END -----*/    //	BaslerCamera::grab_image
+    }
+//--------------------------------------------------------
+/**
+ *	Command ConnectCamera related method
+ *	Description: 
+ *
+ */
+//--------------------------------------------------------
+    void BaslerCamera::connect_camera() {
+        DEBUG_STREAM << "BaslerCamera::ConnectCamera()  - " << device_name << endl;
+        /*----- PROTECTED REGION ID(BaslerCamera::connect_camera) ENABLED START -----*/
+
+        //	Add your own code
+
+        if (camera != nullptr) return;
+
+        // Create an instant camera object with the camera device found first.
+        // FIXME: Need to implement the enumeration to take into account
+        //  the case when multiple Basler devices are in the same system.
+        //  See more here: https://docs.baslerweb.com/pylonapi/cpp/pylon_advanced_topics#enumerating-and-creating-pylon-devices.
+        camera = new Pylon::CInstantCamera(Pylon::CTlFactory::GetInstance().CreateFirstDevice());
+
+        // Print the model name of the camera.
+        DEBUG_STREAM << "Using device " << camera->GetDeviceInfo().GetModelName() << std::endl;
+#ifdef DEBUG_MODE
+        std::cout << "Using device " << camera->GetDeviceInfo().GetModelName() << std::endl;
+#endif
+
+        /*----- PROTECTED REGION END -----*/    //	BaslerCamera::connect_camera
+    }
 //--------------------------------------------------------
 /**
  *	Method      : BaslerCamera::add_dynamic_commands()
@@ -415,18 +469,17 @@ void BaslerCamera::grab_image()
  *                for specified device.
  */
 //--------------------------------------------------------
-void BaslerCamera::add_dynamic_commands()
-{
-	/*----- PROTECTED REGION ID(BaslerCamera::add_dynamic_commands) ENABLED START -----*/
-	
-	//	Add your own code to create and add dynamic commands if any
-	
-	/*----- PROTECTED REGION END -----*/	//	BaslerCamera::add_dynamic_commands
-}
+    void BaslerCamera::add_dynamic_commands() {
+        /*----- PROTECTED REGION ID(BaslerCamera::add_dynamic_commands) ENABLED START -----*/
+
+        //	Add your own code to create and add dynamic commands if any
+
+        /*----- PROTECTED REGION END -----*/    //	BaslerCamera::add_dynamic_commands
+    }
 
 /*----- PROTECTED REGION ID(BaslerCamera::namespace_ending) ENABLED START -----*/
 
 //	Additional Methods
 
-/*----- PROTECTED REGION END -----*/	//	BaslerCamera::namespace_ending
+/*----- PROTECTED REGION END -----*/    //	BaslerCamera::namespace_ending
 } //	namespace

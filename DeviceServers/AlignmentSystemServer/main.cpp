@@ -32,6 +32,9 @@
 //=============================================================================
 #include <tango.h>
 
+// This include is needed for Initialization/Uninitialization of the pylon Runtime Library
+#include <pylon/PylonIncludes.h>
+
 // Check if crash reporting is used.
 #if defined(ENABLE_CRASH_REPORT)
 #  include <crashreporting/crash_report.h>
@@ -42,8 +45,11 @@
 
 DECLARE_CRASH_HANDLER
 
-int main(int argc,char *argv[])
-{
+int main(int argc,char *argv[]) {
+
+    // The Pylon::PylonAutoInitTerm convenience class helps to handle the initialization and uninitialization of the pylon Runtime Library automatically. See more: https://docs.baslerweb.com/pylonapi/cpp/pylon_programmingguide#initializationuninitialization-of-the-pylon-runtime-library
+    Pylon::PylonAutoInitTerm autoInitTerm;
+
 	INSTALL_CRASH_HANDLER
 	try
 	{

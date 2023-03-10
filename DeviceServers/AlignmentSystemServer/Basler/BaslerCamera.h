@@ -35,6 +35,8 @@
 
 #include <tango.h>
 
+#include <pylon/PylonIncludes.h>
+#include <pylon/Device.h>
 
 /*----- PROTECTED REGION END -----*/	//	BaslerCamera.h
 
@@ -57,6 +59,12 @@ class BaslerCamera : public TANGO_BASE_CLASS
 /*----- PROTECTED REGION ID(BaslerCamera::Data Members) ENABLED START -----*/
 
 //	Add your own data members
+
+        // Camera Device Object ptr
+        Pylon::CInstantCamera *camera;
+
+        // This smart pointer will receive the grab result data.
+        Pylon::CGrabResultPtr ptrGrabResult;
 
 /*----- PROTECTED REGION END -----*/	//	BaslerCamera::Data Members
 
@@ -203,6 +211,13 @@ public:
 	 */
 	virtual void grab_image();
 	virtual bool is_GrabImage_allowed(const CORBA::Any &any);
+	/**
+	 *	Command ConnectCamera related method
+	 *	Description: 
+	 *
+	 */
+	virtual void connect_camera();
+	virtual bool is_ConnectCamera_allowed(const CORBA::Any &any);
 
 
 	//--------------------------------------------------------

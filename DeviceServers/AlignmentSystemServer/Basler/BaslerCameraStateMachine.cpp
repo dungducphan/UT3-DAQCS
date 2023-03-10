@@ -160,6 +160,21 @@ bool BaslerCamera::is_GrabImage_allowed(TANGO_UNUSED(const CORBA::Any &any))
 	return true;
 }
 
+//--------------------------------------------------------
+/**
+ *	Method      : BaslerCamera::is_ConnectCamera_allowed()
+ *	Description : Execution allowed for ConnectCamera attribute
+ */
+//--------------------------------------------------------
+bool BaslerCamera::is_ConnectCamera_allowed(TANGO_UNUSED(const CORBA::Any &any))
+{
+	//	Not any excluded states for ConnectCamera command.
+	/*----- PROTECTED REGION ID(BaslerCamera::ConnectCameraStateAllowed) ENABLED START -----*/
+	
+	/*----- PROTECTED REGION END -----*/	//	BaslerCamera::ConnectCameraStateAllowed
+	return true;
+}
+
 
 /*----- PROTECTED REGION ID(BaslerCamera::BaslerCameraStateAllowed.AdditionalMethods) ENABLED START -----*/
 
