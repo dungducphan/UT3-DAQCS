@@ -1,4 +1,4 @@
-/*----- PROTECTED REGION ID(Camera::ClassFactory.cpp) ENABLED START -----*/
+/*----- PROTECTED REGION ID(PCOCamera::ClassFactory.cpp) ENABLED START -----*/
 //=============================================================================
 //
 // file :        ClassFactory.cpp
@@ -33,18 +33,18 @@
 //=============================================================================
 
 #include <tango.h>
-#include <CameraClass.h>
+#include <PCOCameraClass.h>
 
 //	Add class header files if needed
 
 
 /**
- *	Create Camera Class singleton and store it in DServer object.
+ *	Create PCOCamera Class singleton and store it in DServer object.
  */
 
 void Tango::DServer::class_factory()
 {
 	//	Add method class init if needed
-	add_class(Camera_ns::CameraClass::init("Camera"));
+	add_class(PCOCamera_ns::PCOCameraClass::init("PCOCamera"));
 }
-/*----- PROTECTED REGION END -----*/	//	Camera::ClassFactory.cpp
+/*----- PROTECTED REGION END -----*/	//	PCOCamera::ClassFactory.cpp
