@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="ASCII"?>
+<pogoDsl:PogoSystem xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:pogoDsl="http://www.esrf.fr/tango/pogo/PogoDsl">
+  <multiClasses pogoRevision="9.6" name="AlignmentSystemServer" sourcePath="/home/dphan/workspace/UT3DAQCS/DeviceServers/AlignmentSystemServer" description="" filestogenerate="XMI   file,Code files,CMakeLists,Protected Regions">
+    <classes classname="BaslerCamera" sourcePath="./Basler">
+      <inheritances classname="Device_Impl" sourcePath=""/>
+    </classes>
+    <classes classname="PCOCamera" sourcePath="./PCO">
+      <inheritances classname="Device_Impl" sourcePath=""/>
+    </classes>
+    <preferences makefileHome="/usr/local/tango/share/pogo/preferences"/>
+  </multiClasses>
+</pogoDsl:PogoSystem>
